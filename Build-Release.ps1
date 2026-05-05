@@ -28,10 +28,22 @@ if (Test-Path $PngFile) {
 
 Write-Host "2. Zipping payload..." -ForegroundColor Cyan
 if (Test-Path $ZipFile) { Remove-Item $ZipFile -Force }
-# Exclude git, Assets, and existing exe/zip
-$filesToZip = Get-ChildItem -Path $ProjectDir -Exclude ".git", "Assets", "*.exe", "*.zip"
-Compress-Archive -Path $filesToZip.FullName -DestinationPath $ZipFile -Force
-Write-Host "   Created payload.zip" -ForegroundColor Green
+
+# Create a staging folder to ensure we only zip what we need
+$StageDir = Join-Path $AssetsDir "Stage"
+if (Test-Path $StageDir) { Remove-Item $StageDir -Recurse -Force }
+New-Item $StageDir -ItemType Directory | Out-Null
+
+$filesToZip = Get-ChildItem -Path $ProjectDir -Exclude ".git", "Assets", "*.exe", "*.zip", "*.log", "sync_log.txt", "copy_log.txt"
+foreach ($f in $filesToZip) {
+    Copy-Item -Path $f.FullName -Destination $StageDir -Recurse -Force
+}
+
+Compress-Archive -Path "$StageDir\*" -DestinationPath $ZipFile -Force
+Remove-Item $StageDir -Recurse -Force
+
+$zipSize = (Get-Item $ZipFile).Length
+Write-Host "   Created payload.zip ($($zipSize) bytes)" -ForegroundColor Green
 
 Write-Host "3. Generating C# Launcher code..." -ForegroundColor Cyan
 $launcherCode = @"
@@ -49,26 +61,28 @@ namespace Win11Optimizer {
             string tempDir = Path.Combine(Path.GetTempPath(), "Win11Optimizer_" + Guid.NewGuid().ToString().Substring(0,8));
             Directory.CreateDirectory(tempDir);
             try {
-                // Extract embedded zip
-                using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("payload.zip"))
-                using (FileStream fileStream = new FileStream(Path.Combine(tempDir, "payload.zip"), FileMode.Create)) {
-                    stream.CopyTo(fileStream);
+using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("payload.zip")) {
+                    if (stream == null) throw new Exception("Embedded payload not found in resources!");
+                    using (FileStream fileStream = new FileStream(Path.Combine(tempDir, "payload.zip"), FileMode.Create)) {
+                        stream.CopyTo(fileStream);
+                    }
                 }
                 ZipFile.ExtractToDirectory(Path.Combine(tempDir, "payload.zip"), tempDir);
                 
-                // Run Win11Optimizer.ps1 hidden
                 string ps1Path = Path.Combine(tempDir, "Win11Optimizer.ps1");
+                if (!File.Exists(ps1Path)) throw new Exception("Controller script not found after extraction!");
+
                 ProcessStartInfo psi = new ProcessStartInfo {
                     FileName = "powershell.exe",
-                    Arguments = "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File \"" + ps1Path + "\"",
+                    Arguments = "-NoProfile -ExecutionPolicy Bypass -File \"" + ps1Path + "\"",
                     UseShellExecute = false,
-                    CreateNoWindow = true
+                    CreateNoWindow = false
                 };
                 Process p = Process.Start(psi);
                 p.WaitForExit();
             }
             catch (Exception ex) {
-                // Ignore silent errors for now, or log to event viewer if needed
+                System.Windows.Forms.MessageBox.Show("Fatal Launcher Error:\n" + ex.Message + "\n\nStack:\n" + ex.StackTrace, "Win11 Optimizer - Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
             }
             finally {
                 try {
@@ -94,8 +108,9 @@ $compileArgs = @(
     "/nologo",
     "/target:winexe",
     "/out:`"$ExeFile`"",
-    "/res:`"$ZipFile`"",
+    "/res:`"$ZipFile`",payload.zip",
     "/reference:System.IO.Compression.FileSystem.dll",
+    "/reference:System.Windows.Forms.dll",
     "`"$CsFile`""
 )
 

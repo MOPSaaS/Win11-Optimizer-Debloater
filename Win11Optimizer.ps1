@@ -132,6 +132,7 @@ $WorkerScript = {
                 $priv = $Options.Privacy;     if ($priv) { Apply-PrivacySettings @priv }
                 Write-Log "All operations finished." -Level Success
                 Write-Log "Reboot recommended if you toggled HAGS or optional features." -Level Info
+            }
             'Restore' {
                 Restore-SystemDefaults
             }

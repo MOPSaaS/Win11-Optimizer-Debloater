@@ -1,0 +1,31 @@
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, May 5, 2026 2:29:14 PM
+   Source : F:\Claude Workspaces\Chi\Win11Optimizer\Win11-Optimizer-Debloater\
+     Dest : F:\Claude Workspaces\Chi\Win11Optimizer\
+
+    Files : Win11Optimizer.exe
+	    
+  Options : /V /TEE /DCOPY:DA /COPY:DAT /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                   1	F:\Claude Workspaces\Chi\Win11Optimizer\Win11-Optimizer-Debloater\
+	    Newer     		   86016	Win11Optimizer.exe100%  
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0         0
+   Files :         1         1         0         0         0         0
+   Bytes :    84.0 k    84.0 k         0         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+
+
+   Speed :           86,016,000 Bytes/sec.
+   Speed :            4,921.875 MegaBytes/min.
+   Ended : Tuesday, May 5, 2026 2:29:14 PM
+
