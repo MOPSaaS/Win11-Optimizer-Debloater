@@ -132,7 +132,6 @@ $WorkerScript = {
                 $priv = $Options.Privacy;     if ($priv) { Apply-PrivacySettings @priv }
                 Write-Log "All operations finished." -Level Success
                 Write-Log "Reboot recommended if you toggled HAGS or optional features." -Level Info
-            }
             'Restore' {
                 Restore-SystemDefaults
             }
@@ -504,6 +503,10 @@ try {
 
 try {
     Write-Log "Win11 Optimizer ready. Log file: $(Get-LogFilePath)" -Level Info
+    if (-not (Test-IsAdmin)) {
+        Write-Log "WARNING: Not running as Administrator. Most optimizations will fail!" -Level Warning
+        [System.Windows.MessageBox]::Show("Win11 Optimizer is not running as Administrator.`n`nPlease right-click and 'Run as Administrator' for the best results.", 'Permission Warning', 'OK', 'Warning') | Out-Null
+    }
 } catch { }
 
 # Kick off an initial state scan so [Done] indicators populate on first launch

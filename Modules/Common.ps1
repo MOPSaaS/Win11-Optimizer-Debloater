@@ -24,9 +24,14 @@ function Set-RegistryValueSafe {
         return $false
     }
 
-    New-ItemProperty -Path $Path -Name $Name -Value $Value -PropertyType $Type -Force | Out-Null
-    Write-Log "Set $Path\$Name = $Value ($Type)" -Level Success
-    return $true
+    try {
+        New-ItemProperty -Path $Path -Name $Name -Value $Value -PropertyType $Type -Force -ErrorAction Stop | Out-Null
+        Write-Log "Set $Path\$Name = $Value ($Type)" -Level Success
+        return $true
+    } catch {
+        Write-Log "Failed to set registry $Path\$Name : $($_.Exception.Message)" -Level Warning
+        return $false
+    }
 }
 
 function Disable-ServiceSafe {
