@@ -73,3 +73,35 @@ function Write-Log {
 }
 
 function Get-LogFilePath { $Script:LogFile }
+
+# Set the progress bar value and optional status label from any thread.
+# UIContext must contain 'Window', and optionally 'ProgressBar' and 'Status'.
+function Set-ProgressUI {
+    param(
+        [Parameter(Mandatory)][int]    $Percent,
+        [string]                        $StatusText = ''
+    )
+
+    if (-not $Script:UIContext) { return }
+    $ctx = $Script:UIContext
+    $p   = $Percent
+    $s   = $StatusText
+
+    $action = {
+        try {
+            if ($ctx['ProgressBar']) {
+                $ctx['ProgressBar'].IsIndeterminate = $false
+                $ctx['ProgressBar'].Value           = $p
+            }
+            if ($s -and $ctx['Status']) { $ctx['Status'].Text = $s }
+        } catch { }
+    }
+
+    try {
+        if ($ctx['Window'].Dispatcher.CheckAccess()) {
+            & $action
+        } else {
+            $ctx['Window'].Dispatcher.Invoke([action]$action)
+        }
+    } catch { }
+}

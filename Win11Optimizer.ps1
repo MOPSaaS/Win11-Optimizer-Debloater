@@ -97,7 +97,9 @@ foreach ($node in $names) {
 }
 
 $ctxData = @{ Window = $Window }
-if ($ui.rtbLog) { $ctxData.Box = $ui.rtbLog }
+if ($ui.rtbLog)      { $ctxData.Box         = $ui.rtbLog }
+if ($ui.progressBar) { $ctxData.ProgressBar = $ui.progressBar }
+if ($ui.lblStatus)   { $ctxData.Status      = $ui.lblStatus }
 $Script:SyncUI = [hashtable]::Synchronized($ctxData)
 Set-LoggerUIContext -UIContext $Script:SyncUI
 
@@ -132,11 +134,17 @@ $WorkerScript = {
             'Optimize' {
                 $path = Start-BackupSession
                 Write-Log "Backup snapshot: $path" -Level Info
-                $perf = $Options.Performance; if ($perf) { Optimize-Performance @perf }
-                $deb  = $Options.Debloat;     if ($deb)  { Remove-Bloatware     @deb }
-                $gam  = $Options.Gaming;      if ($gam)  { Apply-GamingTweaks   @gam }
-                $dev  = $Options.DevTools;    if ($dev)  { Apply-DevToolsTweaks @dev }
+                Set-ProgressUI -Percent 5  -StatusText 'Applying performance tweaks...'
+                $perf = $Options.Performance; if ($perf) { Optimize-Performance  @perf }
+                Set-ProgressUI -Percent 25 -StatusText 'Removing bloatware...'
+                $deb  = $Options.Debloat;     if ($deb)  { Remove-Bloatware      @deb }
+                Set-ProgressUI -Percent 50 -StatusText 'Applying gaming tweaks...'
+                $gam  = $Options.Gaming;      if ($gam)  { Apply-GamingTweaks    @gam }
+                Set-ProgressUI -Percent 70 -StatusText 'Configuring dev tools...'
+                $dev  = $Options.DevTools;    if ($dev)  { Apply-DevToolsTweaks  @dev }
+                Set-ProgressUI -Percent 85 -StatusText 'Applying privacy settings...'
                 $priv = $Options.Privacy;     if ($priv) { Apply-PrivacySettings @priv }
+                Set-ProgressUI -Percent 100 -StatusText 'Done'
                 Write-Log "All operations finished." -Level Success
                 Write-Log "Reboot recommended if you toggled HAGS or optional features." -Level Info
             }
@@ -489,6 +497,79 @@ if ($ui.btnRescan) {
     $ui.btnRescan.Add_Click({
         Invoke-StateScan
     })
+}
+
+#--- Select All / Deselect All (scoped to the active tab) -----------------
+$Script:TabCheckboxMap = @{
+    0 = @('cbDebloatTeams','cbDebloatClipchamp','cbDebloatWeather','cbDebloatNews',
+          'cbDebloatTips','cbDebloatGetHelp','cbDebloatMaps','cbDebloatPeople',
+          'cbDebloatMoviesTV','cbDebloatCortana','cbDebloatXbox','cbDebloatOneDrive')
+    1 = @('cbPerfSysMain','cbPerfDiagTrack','cbPerfFax','cbPerfRemoteRegistry',
+          'cbPerfPrintSpooler','cbPerfAnimations','cbPerfHighPerf','cbPerfStartup')
+    2 = @('cbGameMode','cbHAGS','cbDisableGameBar','cbDisableGameDVR','cbGameTCPNoDelay')
+    3 = @('cbDevWSL','cbDevVMP','cbDevHyperV','cbDevContainers')
+    4 = @('cbPrivAdId','cbPrivTelemetry','cbPrivConsumerFeatures','cbPrivStartTracking',
+          'cbPrivBackgroundApps','cbPrivacyDeliveryOpt','cbPrivacyEdgeTelemetry')
+}
+
+if ($ui.btnSelectAll) {
+    $ui.btnSelectAll.Add_Click({
+        $tabIdx = if ($ui.tabMain) { $ui.tabMain.SelectedIndex } else { -1 }
+        if ($Script:TabCheckboxMap.ContainsKey($tabIdx)) {
+            foreach ($name in $Script:TabCheckboxMap[$tabIdx]) {
+                if ($ui[$name]) { $ui[$name].IsChecked = $true }
+            }
+        }
+    })
+}
+
+if ($ui.btnDeselectAll) {
+    $ui.btnDeselectAll.Add_Click({
+        $tabIdx = if ($ui.tabMain) { $ui.tabMain.SelectedIndex } else { -1 }
+        if ($Script:TabCheckboxMap.ContainsKey($tabIdx)) {
+            foreach ($name in $Script:TabCheckboxMap[$tabIdx]) {
+                if ($ui[$name]) { $ui[$name].IsChecked = $false }
+            }
+        }
+    })
+}
+
+#--- Log right-click context menu -----------------------------------------
+if ($ui.rtbLog) {
+    $logMenu = New-Object System.Windows.Controls.ContextMenu
+
+    $miCopySelected = New-Object System.Windows.Controls.MenuItem
+    $miCopySelected.Header = 'Copy Selected'
+    $miCopySelected.Add_Click({ try { $ui.rtbLog.Copy() } catch { } })
+
+    $miCopyAll = New-Object System.Windows.Controls.MenuItem
+    $miCopyAll.Header = 'Copy All'
+    $miCopyAll.Add_Click({
+        try {
+            $range = New-Object System.Windows.Documents.TextRange(
+                $ui.rtbLog.Document.ContentStart,
+                $ui.rtbLog.Document.ContentEnd)
+            [System.Windows.Clipboard]::SetText($range.Text)
+        } catch { }
+    })
+
+    $miOpenFolder = New-Object System.Windows.Controls.MenuItem
+    $miOpenFolder.Header = 'Open Log Folder'
+    $miOpenFolder.Add_Click({
+        try {
+            $logPath = Get-LogFilePath
+            if ($logPath) {
+                $folder = Split-Path $logPath -Parent
+                [System.Diagnostics.Process]::Start('explorer.exe', $folder) | Out-Null
+            }
+        } catch { }
+    })
+
+    $null = $logMenu.Items.Add($miCopySelected)
+    $null = $logMenu.Items.Add($miCopyAll)
+    $null = $logMenu.Items.Add((New-Object System.Windows.Controls.Separator))
+    $null = $logMenu.Items.Add($miOpenFolder)
+    $ui.rtbLog.ContextMenu = $logMenu
 }
 
 if ($ui.lnkSouthOpsForge) {

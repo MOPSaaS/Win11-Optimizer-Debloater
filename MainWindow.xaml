@@ -87,6 +87,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- Header -->
@@ -189,8 +190,14 @@
             </TabItem>
         </TabControl>
 
+        <!-- Tab-level actions: Select All / Deselect All for the active tab -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,6,0,0">
+            <Button x:Name="btnSelectAll"   Content="Select All"   Background="#3B4261" Margin="0,0,6,0" Padding="8,4" FontSize="12"/>
+            <Button x:Name="btnDeselectAll" Content="Deselect All" Background="#3B4261" Padding="8,4"    FontSize="12"/>
+        </StackPanel>
+
         <!-- Progress -->
-        <Grid Grid.Row="2" Margin="0,16,0,8">
+        <Grid Grid.Row="3" Margin="0,10,0,8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -200,7 +207,7 @@
         </Grid>
 
         <!-- Action buttons -->
-        <Grid Grid.Row="3">
+        <Grid Grid.Row="4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -216,7 +223,7 @@
         </Grid>
 
         <!-- Footer -->
-        <TextBlock Grid.Row="4" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,12,0,0" Foreground="{StaticResource TextDim}" FontSize="11">
+        <TextBlock Grid.Row="5" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,12,0,0" Foreground="{StaticResource TextDim}" FontSize="11">
             <Run Text="Developed by " />
             <Hyperlink x:Name="lnkSouthOpsForge" NavigateUri="https://southopsforge.com" Foreground="{StaticResource Accent}" TextDecorations="None">
                 <Run Text="SouthOpsForge" />
