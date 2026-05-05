@@ -40,8 +40,8 @@ Modules/Gaming.ps1            → Apply-GamingTweaks
 Modules/Privacy.ps1           → Apply-PrivacySettings
 Modules/DevTools.ps1          → Apply-DevToolsTweaks (only enables, never removes)
 Modules/Restore.ps1           → Restore-SystemDefaults (replays snapshot in reverse)
-Build/Build-Exe.ps1           → PS2EXE packaging
-Build/installer.iss           → Inno Setup installer
+Build-Release.ps1             → standalone EXE builder: zips payload, compiles C# launcher via csc.exe
+                                outputs Win11Optimizer.exe to project root (no extra folders needed)
 .github/workflows/ci.yml      → parse + XAML + PSScriptAnalyzer
 ```
 
@@ -97,7 +97,7 @@ Failures fail the build. Don't add new excluded rules without pushing a justific
 - **HAGS** and **Optional Features** require a reboot before taking effect. The log says so; don't add an auto-reboot prompt.
 - **Teams Personal** sometimes returns via Microsoft Store auto-update. Acceptable — running the optimizer again removes it; the snapshot still restores it.
 - **PrintSpooler** is unchecked by default on the Performance tab. Don't change that default — too many users rely on "Print to PDF" / "OneNote Printer" virtual printers.
-- The `core.ignorecase=true` Windows Git default once made `build/` (lowercase) match the `Build/` source folder and silently exclude it. The `.gitignore` has been corrected to only exclude `dist/` and `out/`. Don't re-add `build/`.
+- **Build script**: `Build-Release.ps1` in the project root is the only build script. The old `Build/` folder (ps2exe + Inno Setup) has been deleted. Don't recreate it. The exe outputs to the project root, not a `dist/` subfolder.
 
 ## How to verify a change without breaking the host
 
