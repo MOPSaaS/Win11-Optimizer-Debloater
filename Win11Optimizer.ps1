@@ -2,7 +2,9 @@
 # Loads MainWindow.xaml, wires up handlers, and dispatches work to a background runspace.
 
 [CmdletBinding()]
-param()
+param(
+    [string]$LauncherPath
+)
 
 #--- Setup ----------------------------------------------------------------
 $ErrorActionPreference = 'Stop'
@@ -53,6 +55,11 @@ foreach ($m in $Script:ModuleFiles) {
 }
 Log-Debug "  Loading StateDetector.ps1"
 . (Join-Path $Script:ModuleDir 'StateDetector.ps1')
+
+if ($LauncherPath) {
+    Log-Debug "Using custom log path from launcher: $LauncherPath"
+    Initialize-Logger -BasePath $LauncherPath
+}
 
 #--- Admin gate -----------------------------------------------------------
 if (-not (Test-IsAdmin)) {

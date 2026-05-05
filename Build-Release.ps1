@@ -72,11 +72,13 @@ using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream
                 string ps1Path = Path.Combine(tempDir, "Win11Optimizer.ps1");
                 if (!File.Exists(ps1Path)) throw new Exception("Controller script not found after extraction!");
 
+                string exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
                 ProcessStartInfo psi = new ProcessStartInfo {
                     FileName = "powershell.exe",
-                    Arguments = "-NoProfile -ExecutionPolicy Bypass -File \"" + ps1Path + "\"",
+                    Arguments = "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File \"" + ps1Path + "\" -LauncherPath \"" + exePath + "\"",
                     UseShellExecute = false,
-                    CreateNoWindow = false
+                    CreateNoWindow = true
                 };
                 Process p = Process.Start(psi);
                 p.WaitForExit();

@@ -1,9 +1,20 @@
 # Logger.ps1 - Centralized logging
 # Writes to ProgramData log file and (when GUI present) appends to RichTextBox via Dispatcher.
 
-$Script:LogRoot = Join-Path $env:ProgramData 'Win11Optimizer\logs'
-$null = New-Item -ItemType Directory -Path $Script:LogRoot -Force -ErrorAction SilentlyContinue
-$Script:LogFile = Join-Path $Script:LogRoot ("optimize-{0:yyyyMMdd-HHmmss}.log" -f (Get-Date))
+$Script:LogFile = $null
+$Script:UIContext = $null
+
+function Initialize-Logger {
+    param([string]$BasePath)
+
+    $root = if ($BasePath) { Join-Path $BasePath "logs" } else { Join-Path $env:ProgramData 'Win11Optimizer\logs' }
+    try { $null = New-Item -ItemType Directory -Path $root -Force -ErrorAction SilentlyContinue } catch {}
+    
+    $Script:LogFile = Join-Path $root ("optimize-{0:yyyyMMdd-HHmmss}.log" -f (Get-Date))
+}
+
+# Default initialization (can be overridden by Initialize-Logger later)
+Initialize-Logger
 $Script:UIContext = $null
 
 function Set-LoggerUIContext {
