@@ -7,7 +7,9 @@ function Apply-PrivacySettings {
         [bool] $Telemetry            = $true,
         [bool] $ConsumerFeatures     = $true,
         [bool] $StartTracking        = $true,
-        [bool] $BackgroundApps       = $true
+        [bool] $BackgroundApps       = $true,
+        [bool] $DeliveryOpt          = $true,
+        [bool] $EdgeTelemetry        = $true
     )
 
     Write-Log "=== Privacy ===" -Level Info
@@ -34,5 +36,21 @@ function Apply-PrivacySettings {
 
     if ($BackgroundApps) {
         Set-RegistryValueSafe -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications' -Name 'GlobalUserDisabled' -Value 1 -Type DWord
+    }
+
+    if ($DeliveryOpt) {
+        Set-RegistryValueSafe -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization' -Name 'DODownloadMode' -Value 0 -Type DWord
+    }
+
+    if ($EdgeTelemetry) {
+        try {
+            $t1 = Get-ScheduledTask -TaskName 'MicrosoftEdgeUpdateTaskMachineCore' -ErrorAction SilentlyContinue
+            $t2 = Get-ScheduledTask -TaskName 'MicrosoftEdgeUpdateTaskMachineUA' -ErrorAction SilentlyContinue
+            if ($t1 -and $t1.State -ne 'Disabled') { Disable-ScheduledTask -TaskName 'MicrosoftEdgeUpdateTaskMachineCore' -ErrorAction Stop | Out-Null }
+            if ($t2 -and $t2.State -ne 'Disabled') { Disable-ScheduledTask -TaskName 'MicrosoftEdgeUpdateTaskMachineUA' -ErrorAction Stop | Out-Null }
+            Write-Log "Disabled Edge background telemetry and update tasks" -Level Success
+        } catch {
+            Write-Log "Failed to disable Edge tasks: $($_.Exception.Message)" -Level Warning
+        }
     }
 }

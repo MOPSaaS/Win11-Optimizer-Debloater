@@ -76,4 +76,21 @@ function Remove-Bloatware {
             }
         }
     }
+
+    if ($OneDrive) {
+        Write-Log "Uninstalling OneDrive... (This may take a moment)" -Level Info
+        try {
+            $odSys = "$env:SystemRoot\SysWOW64\OneDriveSetup.exe"
+            if (Test-Path $odSys) {
+                Start-Process -FilePath $odSys -ArgumentList "/uninstall" -Wait -NoNewWindow -ErrorAction Stop
+                Write-Log "OneDrive uninstalled successfully" -Level Success
+            } else {
+                Write-Log "OneDrive setup executable not found, already uninstalled?" -Level Skip
+            }
+            # Clean up Explorer sidebar
+            Set-RegistryValueSafe -Path "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" -Name "System.IsPinnedToNameSpaceTree" -Value 0 -Type DWord
+        } catch {
+            Write-Log "Failed to uninstall OneDrive: $($_.Exception.Message)" -Level Warning
+        }
+    }
 }

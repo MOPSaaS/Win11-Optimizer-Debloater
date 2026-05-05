@@ -8,10 +8,9 @@ $Script:UIContext = $null
 
 function Set-LoggerUIContext {
     param(
-        [Parameter(Mandatory)] $Window,
-        [Parameter(Mandatory)] $RichTextBox
+        [Parameter(Mandatory)] $UIContext
     )
-    $Script:UIContext = @{ Window = $Window; Box = $RichTextBox }
+    $Script:UIContext = $UIContext
 }
 
 function Write-Log {
@@ -37,16 +36,26 @@ function Write-Log {
     if ($Script:UIContext) {
         $ctx = $Script:UIContext
         try {
-            $ctx.Window.Dispatcher.Invoke([action]{
-                $para = New-Object System.Windows.Documents.Paragraph
-                $para.Margin = [System.Windows.Thickness]::new(0)
-                $run = New-Object System.Windows.Documents.Run($line)
-                $run.Foreground = (New-Object System.Windows.Media.BrushConverter).ConvertFromString($color)
-                $para.Inlines.Add($run)
-                $ctx.Box.Document.Blocks.Add($para)
-                $ctx.Box.ScrollToEnd()
-            })
-        } catch { }
+            if ($null -ne $ctx['Window'] -and $null -ne $ctx['Box']) {
+                $LogAction = {
+                    $para = New-Object System.Windows.Documents.Paragraph
+                    $para.Margin = [System.Windows.Thickness]::new(0)
+                    $run = New-Object System.Windows.Documents.Run($line)
+                    $run.Foreground = (New-Object System.Windows.Media.BrushConverter).ConvertFromString($color)
+                    $para.Inlines.Add($run)
+                    $ctx['Box'].Document.Blocks.Add($para)
+                    $ctx['Box'].ScrollToEnd()
+                }
+
+                if ($ctx['Window'].Dispatcher.CheckAccess()) {
+                    & $LogAction
+                } else {
+                    $ctx['Window'].Dispatcher.Invoke($LogAction)
+                }
+            }
+        } catch { 
+            Write-Host "Logger error: $($_.Exception.Message)"
+        }
     } else {
         Write-Host $line
     }

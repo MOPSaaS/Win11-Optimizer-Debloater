@@ -86,6 +86,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- Header -->
@@ -114,6 +115,7 @@
                         <CheckBox x:Name="cbDebloatMoviesTV" Content="Movies &amp; TV" IsChecked="True"/>
                         <CheckBox x:Name="cbDebloatCortana" Content="Cortana" IsChecked="True"/>
                         <CheckBox x:Name="cbDebloatXbox" Content="Xbox apps (keeps Gaming Services for anti-cheat)" IsChecked="False"/>
+                        <CheckBox x:Name="cbDebloatOneDrive" Content="Fully uninstall OneDrive and remove from Explorer" IsChecked="False"/>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
@@ -140,6 +142,7 @@
                         <CheckBox x:Name="cbHAGS" Content="Enable Hardware-Accelerated GPU Scheduling (requires reboot)" IsChecked="True"/>
                         <CheckBox x:Name="cbDisableGameBar" Content="Disable Xbox Game Bar overlay" IsChecked="True"/>
                         <CheckBox x:Name="cbDisableGameDVR" Content="Disable Game DVR background recording" IsChecked="True"/>
+                        <CheckBox x:Name="cbGameTCPNoDelay" Content="Disable Nagle's Algorithm (TCP NoDelay) to lower network latency" IsChecked="True"/>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
@@ -164,6 +167,8 @@
                         <CheckBox x:Name="cbPrivConsumerFeatures" Content="Disable Windows consumer features (suggested apps)" IsChecked="True"/>
                         <CheckBox x:Name="cbPrivStartTracking" Content="Disable Start menu app launch tracking" IsChecked="True"/>
                         <CheckBox x:Name="cbPrivBackgroundApps" Content="Disable background apps (current user)" IsChecked="True"/>
+                        <CheckBox x:Name="cbPrivacyDeliveryOpt" Content="Disable Windows Update Delivery Optimization (P2P uploads)" IsChecked="True"/>
+                        <CheckBox x:Name="cbPrivacyEdgeTelemetry" Content="Disable Edge background telemetry and update tasks" IsChecked="True"/>
                         <TextBlock Text="Defender, Windows Update, and SmartScreen telemetry remain functional." Foreground="{StaticResource TextDim}" Margin="0,12,0,0" TextWrapping="Wrap"/>
                     </StackPanel>
                 </ScrollViewer>
@@ -209,5 +214,13 @@
             <Button Grid.Column="3" x:Name="btnApplySelected" Content="Apply Selected" Background="#3B4261" Margin="0,0,8,0"/>
             <Button Grid.Column="4" x:Name="btnOptimize" Content="Optimize Now" FontWeight="SemiBold" Padding="20,8"/>
         </Grid>
+
+        <!-- Footer -->
+        <TextBlock Grid.Row="4" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,12,0,0" Foreground="{StaticResource TextDim}" FontSize="11">
+            <Run Text="Developed by " />
+            <Hyperlink x:Name="lnkSouthOpsForge" NavigateUri="https://southopsforge.com" Foreground="{StaticResource Accent}" TextDecorations="None">
+                <Run Text="SouthOpsForge" />
+            </Hyperlink>
+        </TextBlock>
     </Grid>
 </Window>
