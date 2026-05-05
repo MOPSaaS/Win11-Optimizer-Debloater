@@ -91,11 +91,14 @@
         <!-- Header -->
         <StackPanel Grid.Row="0" Margin="0,0,0,16">
             <TextBlock Text="Win11 Performance Optimizer" FontSize="22" FontWeight="SemiBold" Foreground="{StaticResource Text}"/>
-            <TextBlock Text="Safe Mode • Gaming + Development + Anti-Cheat Compatible" Foreground="{StaticResource TextDim}" Margin="0,2,0,0"/>
+            <DockPanel Margin="0,2,0,0">
+                <TextBlock Text="Safe Mode | Gaming + Development + Anti-Cheat Compatible" Foreground="{StaticResource TextDim}" VerticalAlignment="Center"/>
+                <TextBlock x:Name="lblScanStatus" Text="" Foreground="{StaticResource TextDim}" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="11"/>
+            </DockPanel>
         </StackPanel>
 
         <!-- Tabs -->
-        <TabControl Grid.Row="1" Background="{StaticResource Panel}" BorderBrush="{StaticResource Border}">
+        <TabControl x:Name="tabMain" Grid.Row="1" Background="{StaticResource Panel}" BorderBrush="{StaticResource Border}">
             <TabItem Header="Debloat">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="16">
                     <StackPanel>
@@ -118,7 +121,7 @@
             <TabItem Header="Performance">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="16">
                     <StackPanel>
-                        <CheckBox x:Name="cbPerfSysMain" Content="Disable SysMain (Superfetch) — improves SSD performance" IsChecked="True"/>
+                        <CheckBox x:Name="cbPerfSysMain" Content="Disable SysMain (Superfetch) - improves SSD performance" IsChecked="True"/>
                         <CheckBox x:Name="cbPerfDiagTrack" Content="Disable Connected User Experiences and Telemetry (DiagTrack)" IsChecked="True"/>
                         <CheckBox x:Name="cbPerfFax" Content="Disable Fax service" IsChecked="True"/>
                         <CheckBox x:Name="cbPerfRemoteRegistry" Content="Disable Remote Registry" IsChecked="True"/>
@@ -146,7 +149,7 @@
                     <StackPanel>
                         <CheckBox x:Name="cbDevWSL" Content="Ensure WSL feature enabled" IsChecked="True"/>
                         <CheckBox x:Name="cbDevVMP" Content="Ensure Virtual Machine Platform enabled (required by WSL2 / Docker)" IsChecked="True"/>
-                        <CheckBox x:Name="cbDevHyperV" Content="Enable Hyper-V (optional — needed for Windows Sandbox / advanced VMs)" IsChecked="False"/>
+                        <CheckBox x:Name="cbDevHyperV" Content="Enable Hyper-V (optional - needed for Windows Sandbox / advanced VMs)" IsChecked="False"/>
                         <CheckBox x:Name="cbDevContainers" Content="Enable Containers feature" IsChecked="False"/>
                         <TextBlock Text="Developer dependencies (.NET, VC++ runtimes, Git, Docker) are never touched." Foreground="{StaticResource TextDim}" Margin="0,12,0,0" TextWrapping="Wrap"/>
                     </StackPanel>
@@ -198,11 +201,13 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" x:Name="lblBackupInfo" Text="" Foreground="{StaticResource TextDim}" VerticalAlignment="Center"/>
-            <Button Grid.Column="1" x:Name="btnRevert" Content="Revert Changes" Background="#3B4261" Margin="0,0,8,0"/>
-            <Button Grid.Column="2" x:Name="btnApplySelected" Content="Apply Selected" Background="#3B4261" Margin="0,0,8,0"/>
-            <Button Grid.Column="3" x:Name="btnOptimize" Content="Optimize Now" FontWeight="SemiBold" Padding="20,8"/>
+            <Button Grid.Column="1" x:Name="btnRescan" Content="Rescan" Background="#3B4261" Margin="0,0,8,0" ToolTip="Scan the system to detect which optimizations are already applied. Items marked [Done] are already configured correctly."/>
+            <Button Grid.Column="2" x:Name="btnRevert" Content="Revert Changes" Background="#3B4261" Margin="0,0,8,0"/>
+            <Button Grid.Column="3" x:Name="btnApplySelected" Content="Apply Selected" Background="#3B4261" Margin="0,0,8,0"/>
+            <Button Grid.Column="4" x:Name="btnOptimize" Content="Optimize Now" FontWeight="SemiBold" Padding="20,8"/>
         </Grid>
     </Grid>
 </Window>
