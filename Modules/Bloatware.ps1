@@ -14,7 +14,8 @@ function Remove-Bloatware {
         [bool] $People = $true,
         [bool] $MoviesTV = $true,
         [bool] $Cortana = $true,
-        [bool] $Xbox = $false
+        [bool] $Xbox = $false,
+        [bool] $OneDrive = $false
     )
 
     Write-Log "=== Debloat ===" -Level Info
