@@ -217,10 +217,12 @@ function Update-UIFromState {
             if ($done) {
                 $cb.Content    = "$($item.Text)  [Done]"
                 $cb.Foreground = $Script:BrushDone
+                $cb.IsChecked  = $false
                 $applied++
             } else {
                 $cb.Content    = $item.Text
                 $cb.Foreground = $Script:BrushNormal
+                $cb.IsChecked  = $true
                 $pending++
             }
         } catch {
@@ -359,7 +361,7 @@ function Invoke-OptimizerWork {
     $timer.Interval = [TimeSpan]::FromMilliseconds(250)
     $timer.Add_Tick({
         if (-not $Script:WorkerHandle.IsCompleted) { return }
-        $timer.Stop()
+        $this.Stop()
 
         try {
             $Script:PowerShell.EndInvoke($Script:WorkerHandle)
