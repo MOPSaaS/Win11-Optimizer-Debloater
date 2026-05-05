@@ -1,0 +1,37 @@
+# Build output (the Build/ folder with source scripts is committed; build artifacts go to dist/)
+dist/
+out/
+*.exe
+*.msi
+*.msix
+
+# Inno Setup output
+Output/
+*Setup*.exe
+
+# PowerShell Module artifacts
+*.psd1.bak
+
+# Logs and runtime data (these belong in ProgramData, not the repo)
+logs/
+*.log
+
+# IDE / editor
+.vs/
+.vscode/
+*.user
+*.suo
+
+# OS junk
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# PowerShell ISE / PSScriptAnalyzer cache
+.psanalyzer/
+
+# Local env / secrets
+*.local.ps1
+.env

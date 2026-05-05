@@ -1,0 +1,208 @@
+<Window
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Win11 Performance Optimizer (Safe Mode)"
+    Height="720" Width="980"
+    WindowStartupLocation="CenterScreen"
+    Background="#1E1E2E"
+    FontFamily="Segoe UI"
+    FontSize="13">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="Accent" Color="#7AA2F7"/>
+        <SolidColorBrush x:Key="AccentHover" Color="#94B5FA"/>
+        <SolidColorBrush x:Key="Panel" Color="#24283B"/>
+        <SolidColorBrush x:Key="PanelLight" Color="#2A2E42"/>
+        <SolidColorBrush x:Key="Border" Color="#3B4261"/>
+        <SolidColorBrush x:Key="Text" Color="#C0CAF5"/>
+        <SolidColorBrush x:Key="TextDim" Color="#9AA5CE"/>
+        <SolidColorBrush x:Key="Success" Color="#9ECE6A"/>
+        <SolidColorBrush x:Key="Warning" Color="#E0AF68"/>
+        <SolidColorBrush x:Key="Danger" Color="#F7768E"/>
+
+        <Style TargetType="Button">
+            <Setter Property="Foreground" Value="{StaticResource Text}"/>
+            <Setter Property="Background" Value="{StaticResource Accent}"/>
+            <Setter Property="Padding" Value="14,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource AccentHover}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Bd" Property="Background" Value="#3B4261"/>
+                                <Setter Property="Foreground" Value="#6B7394"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="CheckBox">
+            <Setter Property="Foreground" Value="{StaticResource Text}"/>
+            <Setter Property="Margin" Value="0,4"/>
+        </Style>
+
+        <Style TargetType="TabItem">
+            <Setter Property="Foreground" Value="{StaticResource TextDim}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="14,8"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}" CornerRadius="6,6,0,0" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Header" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource Panel}"/>
+                                <Setter Property="Foreground" Value="{StaticResource Accent}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="GroupBox">
+            <Setter Property="Foreground" Value="{StaticResource Accent}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Border}"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,16">
+            <TextBlock Text="Win11 Performance Optimizer" FontSize="22" FontWeight="SemiBold" Foreground="{StaticResource Text}"/>
+            <TextBlock Text="Safe Mode • Gaming + Development + Anti-Cheat Compatible" Foreground="{StaticResource TextDim}" Margin="0,2,0,0"/>
+        </StackPanel>
+
+        <!-- Tabs -->
+        <TabControl Grid.Row="1" Background="{StaticResource Panel}" BorderBrush="{StaticResource Border}">
+            <TabItem Header="Debloat">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="16">
+                    <StackPanel>
+                        <TextBlock Text="Remove preinstalled apps for the current user. Provisioned packages are preserved." Foreground="{StaticResource TextDim}" Margin="0,0,0,12" TextWrapping="Wrap"/>
+                        <CheckBox x:Name="cbDebloatTeams" Content="Microsoft Teams (personal)" IsChecked="True"/>
+                        <CheckBox x:Name="cbDebloatClipchamp" Content="Clipchamp" IsChecked="True"/>
+                        <CheckBox x:Name="cbDebloatWeather" Content="Weather" IsChecked="True"/>
+                        <CheckBox x:Name="cbDebloatNews" Content="News (Bing News)" IsChecked="True"/>
+                        <CheckBox x:Name="cbDebloatTips" Content="Tips / Get Started" IsChecked="True"/>
+                        <CheckBox x:Name="cbDebloatGetHelp" Content="Get Help" IsChecked="True"/>
+                        <CheckBox x:Name="cbDebloatMaps" Content="Maps" IsChecked="True"/>
+                        <CheckBox x:Name="cbDebloatPeople" Content="People" IsChecked="True"/>
+                        <CheckBox x:Name="cbDebloatMoviesTV" Content="Movies &amp; TV" IsChecked="True"/>
+                        <CheckBox x:Name="cbDebloatCortana" Content="Cortana" IsChecked="True"/>
+                        <CheckBox x:Name="cbDebloatXbox" Content="Xbox apps (keeps Gaming Services for anti-cheat)" IsChecked="False"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="Performance">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="16">
+                    <StackPanel>
+                        <CheckBox x:Name="cbPerfSysMain" Content="Disable SysMain (Superfetch) — improves SSD performance" IsChecked="True"/>
+                        <CheckBox x:Name="cbPerfDiagTrack" Content="Disable Connected User Experiences and Telemetry (DiagTrack)" IsChecked="True"/>
+                        <CheckBox x:Name="cbPerfFax" Content="Disable Fax service" IsChecked="True"/>
+                        <CheckBox x:Name="cbPerfRemoteRegistry" Content="Disable Remote Registry" IsChecked="True"/>
+                        <CheckBox x:Name="cbPerfPrintSpooler" Content="Disable Print Spooler (only if you don't print)" IsChecked="False"/>
+                        <CheckBox x:Name="cbPerfAnimations" Content="Disable UI animations and transparency" IsChecked="True"/>
+                        <CheckBox x:Name="cbPerfHighPerf" Content="Set power plan to High Performance (Ultimate if available)" IsChecked="True"/>
+                        <CheckBox x:Name="cbPerfStartup" Content="Disable common non-essential startup apps" IsChecked="True"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="Gaming">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="16">
+                    <StackPanel>
+                        <CheckBox x:Name="cbGameMode" Content="Enable Game Mode" IsChecked="True"/>
+                        <CheckBox x:Name="cbHAGS" Content="Enable Hardware-Accelerated GPU Scheduling (requires reboot)" IsChecked="True"/>
+                        <CheckBox x:Name="cbDisableGameBar" Content="Disable Xbox Game Bar overlay" IsChecked="True"/>
+                        <CheckBox x:Name="cbDisableGameDVR" Content="Disable Game DVR background recording" IsChecked="True"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="Dev Tools">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="16">
+                    <StackPanel>
+                        <CheckBox x:Name="cbDevWSL" Content="Ensure WSL feature enabled" IsChecked="True"/>
+                        <CheckBox x:Name="cbDevVMP" Content="Ensure Virtual Machine Platform enabled (required by WSL2 / Docker)" IsChecked="True"/>
+                        <CheckBox x:Name="cbDevHyperV" Content="Enable Hyper-V (optional — needed for Windows Sandbox / advanced VMs)" IsChecked="False"/>
+                        <CheckBox x:Name="cbDevContainers" Content="Enable Containers feature" IsChecked="False"/>
+                        <TextBlock Text="Developer dependencies (.NET, VC++ runtimes, Git, Docker) are never touched." Foreground="{StaticResource TextDim}" Margin="0,12,0,0" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="Privacy">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="16">
+                    <StackPanel>
+                        <CheckBox x:Name="cbPrivAdId" Content="Disable advertising ID" IsChecked="True"/>
+                        <CheckBox x:Name="cbPrivTelemetry" Content="Set telemetry to minimum allowed (Security/Required)" IsChecked="True"/>
+                        <CheckBox x:Name="cbPrivConsumerFeatures" Content="Disable Windows consumer features (suggested apps)" IsChecked="True"/>
+                        <CheckBox x:Name="cbPrivStartTracking" Content="Disable Start menu app launch tracking" IsChecked="True"/>
+                        <CheckBox x:Name="cbPrivBackgroundApps" Content="Disable background apps (current user)" IsChecked="True"/>
+                        <TextBlock Text="Defender, Windows Update, and SmartScreen telemetry remain functional." Foreground="{StaticResource TextDim}" Margin="0,12,0,0" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="Log">
+                <Grid Margin="0">
+                    <RichTextBox x:Name="rtbLog"
+                                 Background="#16161E"
+                                 Foreground="{StaticResource Text}"
+                                 BorderThickness="0"
+                                 IsReadOnly="True"
+                                 FontFamily="Cascadia Mono, Consolas"
+                                 FontSize="12"
+                                 VerticalScrollBarVisibility="Auto"
+                                 Padding="12"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <!-- Progress -->
+        <Grid Grid.Row="2" Margin="0,16,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <ProgressBar x:Name="progressBar" Grid.Column="0" Height="8" Background="{StaticResource Panel}" Foreground="{StaticResource Accent}" BorderThickness="0" Minimum="0" Maximum="100" Value="0"/>
+            <TextBlock x:Name="lblStatus" Grid.Column="1" Text="Ready" Foreground="{StaticResource TextDim}" Margin="12,0,0,0" VerticalAlignment="Center"/>
+        </Grid>
+
+        <!-- Action buttons -->
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" x:Name="lblBackupInfo" Text="" Foreground="{StaticResource TextDim}" VerticalAlignment="Center"/>
+            <Button Grid.Column="1" x:Name="btnRevert" Content="Revert Changes" Background="#3B4261" Margin="0,0,8,0"/>
+            <Button Grid.Column="2" x:Name="btnApplySelected" Content="Apply Selected" Background="#3B4261" Margin="0,0,8,0"/>
+            <Button Grid.Column="3" x:Name="btnOptimize" Content="Optimize Now" FontWeight="SemiBold" Padding="20,8"/>
+        </Grid>
+    </Grid>
+</Window>

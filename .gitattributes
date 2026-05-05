@@ -1,0 +1,27 @@
+# Normalize line endings
+* text=auto eol=crlf
+
+# Windows-only scripts: always CRLF
+*.ps1   text eol=crlf
+*.psm1  text eol=crlf
+*.psd1  text eol=crlf
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+*.xaml  text eol=crlf
+*.iss   text eol=crlf
+
+# Cross-platform docs / config: LF
+*.md          text eol=lf
+*.json        text eol=lf
+*.yml         text eol=lf
+*.yaml        text eol=lf
+.editorconfig text eol=lf
+.gitignore    text eol=lf
+.gitattributes text eol=lf
+
+# Binary
+*.png binary
+*.ico binary
+*.jpg binary
+*.exe binary
+*.msi binary
