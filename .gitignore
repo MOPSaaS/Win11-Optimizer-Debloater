@@ -35,3 +35,10 @@ $RECYCLE.BIN/
 # Local env / secrets
 *.local.ps1
 .env
+
+# Memory files (kept local; this repo is public, per global Chi rule)
+CLAUDE.md
+STATE.md
+BACKLOG.md
+FEATURES.md
+journal/
